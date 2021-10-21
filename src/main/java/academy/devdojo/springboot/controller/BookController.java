@@ -31,6 +31,12 @@ public class BookController {
         return ResponseEntity.ok(bookService.listAll(pageable));
     }
 
+    @GetMapping(path = "/all")
+    public ResponseEntity<List<Book>> listAll() {
+        log.info((dateUtil.formatLocalDateTimeToDarabasesStyle(LocalDateTime.now())));
+        return ResponseEntity.ok(bookService.listAllNonPageable());
+    }
+
     @GetMapping(path = "/{id}")
     public ResponseEntity<Book> findById(@PathVariable long id) {
         return new ResponseEntity<>(bookService.findByIdOrThrowBadRequestException(id), HttpStatus.OK);
