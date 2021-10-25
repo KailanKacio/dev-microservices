@@ -39,10 +39,7 @@ public class BookService {
 
     @Transactional
     public Book save(BookPostRequestBody bookPostRequestBody) {
-        Book save = bookRepository.save(BookMapper.INSTANCE.toBook(bookPostRequestBody));
-        if (true)
-            throw new RuntimeException("Bad code");
-        return save;
+       return bookRepository.save(BookMapper.INSTANCE.toBook(bookPostRequestBody));
     }
 
     public void delete(long id) {

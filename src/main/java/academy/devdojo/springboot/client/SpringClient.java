@@ -3,8 +3,7 @@ package academy.devdojo.springboot.client;
 import academy.devdojo.springboot.domain.Book;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -28,5 +27,17 @@ public class SpringClient {
                 new ParameterizedTypeReference<>() {
                 });
         log.info(exchange.getBody());
+
+        Book kingdom = Book.builder().name("Kingdom").build();
+        ResponseEntity<Book> kingdomSaved = new RestTemplate().exchange("http://localhost:8080/books/", HttpMethod.POST,
+                new HttpEntity<>(kingdom, createJsonHeader()),
+                Book.class);
+        log.info("Saved Book {}", kingdomSaved);
+    }
+
+    private static HttpHeaders createJsonHeader(){
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return httpHeaders;
     }
 }
