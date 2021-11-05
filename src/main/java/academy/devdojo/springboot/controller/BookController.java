@@ -4,7 +4,6 @@ import academy.devdojo.springboot.domain.Book;
 import academy.devdojo.springboot.request.BookPostRequestBody;
 import academy.devdojo.springboot.request.BookPutRequestBody;
 import academy.devdojo.springboot.service.BookService;
-import academy.devdojo.springboot.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -22,18 +20,15 @@ import java.util.List;
 @Log4j2
 @RequiredArgsConstructor
 public class BookController {
-    private final DateUtil dateUtil;
     private final BookService bookService;
 
     @GetMapping
     public ResponseEntity<Page<Book>> list(Pageable pageable) {
-        log.info((dateUtil.formatLocalDateTimeToDarabasesStyle(LocalDateTime.now())));
         return ResponseEntity.ok(bookService.listAll(pageable));
     }
 
     @GetMapping(path = "/all")
     public ResponseEntity<List<Book>> listAll() {
-        log.info((dateUtil.formatLocalDateTimeToDarabasesStyle(LocalDateTime.now())));
         return ResponseEntity.ok(bookService.listAllNonPageable());
     }
 

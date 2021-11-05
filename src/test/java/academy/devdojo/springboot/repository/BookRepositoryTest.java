@@ -8,8 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
+
+import static academy.devdojo.springboot.util.BookCreator.createBookToBeSaved;
 
 @DataJpaTest
 @DisplayName("Tests for Book Repository")
@@ -22,7 +25,7 @@ class BookRepositoryTest {
     @Test
     @DisplayName("Save creates book when successful")
     void save_PersistBook_WhenSuccessful() {
-        Book bookToBeSaved = creatBook();
+        Book bookToBeSaved = createBookToBeSaved();
         Book bookSaved = this.bookRepository.save(bookToBeSaved);
 
         Assertions.assertThat(bookSaved).isNotNull();
@@ -33,7 +36,7 @@ class BookRepositoryTest {
     @Test
     @DisplayName("Save updates book when successful")
     void save_UpdatesBook_WhenSuccessful() {
-        Book bookToBeSaved = creatBook();
+        Book bookToBeSaved = createBookToBeSaved();
         Book bookSaved = this.bookRepository.save(bookToBeSaved);
         bookSaved.setName("O Peregrino");
         Book bookUpdated = this.bookRepository.save(bookSaved);
@@ -46,7 +49,7 @@ class BookRepositoryTest {
     @Test
     @DisplayName("Delete removes book when successful")
     void delete_RemovesBook_WhenSuccessful() {
-        Book bookToBeSaved = creatBook();
+        Book bookToBeSaved = createBookToBeSaved();
         Book bookSaved = this.bookRepository.save(bookToBeSaved);
 
         this.bookRepository.delete(bookSaved);
@@ -58,20 +61,24 @@ class BookRepositoryTest {
     @Test
     @DisplayName("Find by name returns list of book when successful")
     void findByName_ReturnsListOfBook_WhenSuccessful() {
-        Book bookToBeSaved = creatBook();
+        Book bookToBeSaved = createBookToBeSaved();
         Book bookSaved = this.bookRepository.save(bookToBeSaved);
 
         String name = bookSaved.getName();
         List<Book> books = this.bookRepository.findByName(name);
 
-        Assertions.assertThat(books).isNotEmpty();
-        Assertions.assertThat(books).contains(bookSaved);
+        Assertions.assertThat(books).isNotEmpty().contains(bookSaved);
 
     }
 
-    private Book creatBook() {
-        return Book.builder()
-                .name("O cururu saltitante O RETORNO")
-                .build();
+    @Test
+    @DisplayName("Save throw ConstrainViolationException when name is empty")
+    void save_ThrowConstrainViolationException_WhenNameIsEmpty() {
+        Book book = new Book();
+
+        Assertions.assertThatExceptionOfType(ConstraintViolationException.class)
+                .isThrownBy(() -> this.bookRepository.save(book))
+                .withMessageContaining("The book cannot be empty");
     }
+
 }
