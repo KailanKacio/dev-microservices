@@ -13,6 +13,6 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class BookPostRequestBody {
 
-    @NotEmpty(message = "The book cannot be empty")
+    @NotEmpty
     private String name;
 }
