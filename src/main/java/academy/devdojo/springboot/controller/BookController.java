@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,6 +38,14 @@ public class BookController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<Book> findById(@PathVariable long id) {
         return new ResponseEntity<>(bookService.findByIdOrThrowBadRequestException(id), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "by-id/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Book> findByIdAuthenticationPrincipal(@PathVariable long id,
+                                                                @AuthenticationPrincipal UserDetails userDeetails) {
+        log.info(userDeetails);
+        return ResponseEntity.ok(bookService.findByIdOrThrowBadRequestException(id));
     }
 
     @GetMapping(path = "/find")

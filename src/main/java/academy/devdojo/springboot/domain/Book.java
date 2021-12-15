@@ -22,7 +22,6 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "The book cannot be empty")
     private String name;
 
 }
