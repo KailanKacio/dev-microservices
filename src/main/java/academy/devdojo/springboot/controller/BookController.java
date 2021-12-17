@@ -41,10 +41,9 @@ public class BookController {
     }
 
     @GetMapping(path = "by-id/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Book> findByIdAuthenticationPrincipal(@PathVariable long id,
-                                                                @AuthenticationPrincipal UserDetails userDeetails) {
-        log.info(userDeetails);
+                                                                @AuthenticationPrincipal UserDetails userDetails) {
+        log.info(userDetails);
         return ResponseEntity.ok(bookService.findByIdOrThrowBadRequestException(id));
     }
 
@@ -54,20 +53,19 @@ public class BookController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Book> save(@RequestBody @Valid BookPostRequestBody bookPostRequestBody){
         return new ResponseEntity<>(bookService.save(bookPostRequestBody), HttpStatus.CREATED);
-    }
-
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable long id) {
-        bookService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping
     public ResponseEntity<Void> replace(@RequestBody BookPutRequestBody bookPutRequestBody) {
         bookService.replace(bookPutRequestBody);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping(path = "/admin/{id}")
+    public ResponseEntity<Void> delete(@PathVariable long id) {
+        bookService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
